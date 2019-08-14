@@ -18,7 +18,8 @@ ENV RUBY_VERSION="2.6.3" \
  NODE_VERSION="10.16.0" \
  NODE_8_VERSION="8.16.0" \
  GOLANG_VERSION="1.12.5" \
- DOTNET_SDK_VERSION="2.2.300" \
+ DOTNET_SDK_VERSION="2.2.401" \
+ DOtNET_PREVIEW_SDK_VERSION="SDK 3.0.100-preview8-013656"\
  DOCKER_VERSION="18.09.6" \
  DOCKER_COMPOSE_VERSION="1.24.0"
 
@@ -469,15 +470,24 @@ RUN set -ex \
 
 # Install .NET Core SDK
 ENV DOTNET_SDK_DOWNLOAD_URL https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_SDK_VERSION/dotnet-sdk-$DOTNET_SDK_VERSION-linux-x64.tar.gz
-ENV DOTNET_SDK_DOWNLOAD_SHA 1D660A323180DF3DA8C6E0EA3F439D6BBEC29670D498AC884F38BF3CDFFBB041C7AFFF66171CDFD24C82394B845B135B057404DEF1FCE9F206853726382BC42B
+ENV DOTNET_SDK_DOWNLOAD_SHA 08E1FCAFA4F898C80FF5E88EEB40C7497B4F5651AF3B8EC85F65A3DAA2F1509A766D833477358D3FF83D179E014034AB0C48120847EF24736C8D1A5B67FEC10B
+
+ENV DOTNET_PREVIEW_SDK_DOWNLOAD_URL https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_PREVIEW_SDK_VERSION/dotnet-sdk-$DOTNET_PREVIEW_SDK_VERSION-linux-x64.tar.gz
+ENV DOTNET_PREVIEW_SDK_DOWNLOAD_SHA 448C740418F0AB43B3A8D9F7CCB532E71E590692D3B64239C3F21D46DF3A46788B5B824E1A10236E5ABE51D4A5143C27B90D08B342A683C96BD9ABEBC2D33017
 
 RUN set -ex \
     && curl -SL $DOTNET_SDK_DOWNLOAD_URL --output dotnet.tar.gz \
     && echo "$DOTNET_SDK_DOWNLOAD_SHA dotnet.tar.gz" | sha512sum -c - \
     && mkdir -p /usr/share/dotnet \
     && tar -zxf dotnet.tar.gz -C /usr/share/dotnet \
-    && rm dotnet.tar.gz \
-    && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+    && rm dotnet.tar.gz
+
+RUN set -ex \
+    && curl -SL $DOTNET_PREVIEW_SDK_DOWNLOAD_URL --output dotnet-preview.tar.gz \
+    && echo "$DOTNET_PREVIEW_SDK_DOWNLOAD_SHA dotnet-preview.tar.gz" | sha512sum -c - \
+    && mkdir -p /usr/share/dotnet-preview \
+    && tar -zxf dotnet-preview.tar.gz -C /usr/share/dotnet-preview \
+    && rm dotnet-preview.tar.gz
 
 # Add .NET Core Global Tools install folder to PATH
 ENV PATH "~/.dotnet/tools/:$PATH"
@@ -487,7 +497,7 @@ ENV NUGET_XMLDOC_MODE skip
 RUN set -ex \
     && mkdir warmup \
     && cd warmup \
-    && dotnet new \
+    && /usr/share/dotnet/dotnet new \
     && cd .. \
     && rm -rf warmup \
     && rm -rf /tmp/NuGetScratch
