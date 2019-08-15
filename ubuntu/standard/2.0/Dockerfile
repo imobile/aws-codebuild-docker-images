@@ -485,8 +485,9 @@ RUN set -ex \
 RUN set -ex \
     && curl -SL $DOTNET_PREVIEW_SDK_DOWNLOAD_URL --output dotnet-preview.tar.gz \
     && echo "$DOTNET_PREVIEW_SDK_DOWNLOAD_SHA dotnet-preview.tar.gz" | sha512sum -c - \
-    && mkdir -p /usr/share/dotnet-preview \
-    && tar -zxf dotnet-preview.tar.gz -C /usr/share/dotnet-preview \
+    && tar -zxf dotnet-preview.tar.gz -C dotnet-preview \
+    && cp -r dotnet-preview/* /usr/share/dotnet/ \
+    && rm -r dotnet-preview
     && rm dotnet-preview.tar.gz
 
 # Add .NET Core Global Tools install folder to PATH

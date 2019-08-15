@@ -93,4 +93,4 @@ runtimes:
       3.0:
         commands:
           - echo "Installing .NET version 3.0 ..."
-          - ln -s /usr/share/dotnet-preview/dotnet /usr/bin/dotnet
+          - ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
