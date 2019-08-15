@@ -71,6 +71,7 @@ RUN set -ex \
        sgml-base sgml-data subversion tcl tcl8.6 xml-core xmlto xsltproc \
        tk gettext gettext-base libapr1 libaprutil1 xvfb expect parallel \
        locales rsync \
+    && apt-get install -y --no-install-recommends sudo net-tools \
     && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
     && echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic main" | tee /etc/apt/sources.list.d/mono-official-stable.list \    
     && rm -rf /var/lib/apt/lists/* \
@@ -487,7 +488,7 @@ RUN set -ex \
     && echo "$DOTNET_PREVIEW_SDK_DOWNLOAD_SHA dotnet-preview.tar.gz" | sha512sum -c - \
     && tar -zxf dotnet-preview.tar.gz -C dotnet-preview \
     && cp -r dotnet-preview/* /usr/share/dotnet/ \
-    && rm -r dotnet-preview
+    && rm -r dotnet-preview \
     && rm dotnet-preview.tar.gz
 
 # Add .NET Core Global Tools install folder to PATH
